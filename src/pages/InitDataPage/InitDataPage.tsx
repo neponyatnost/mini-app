@@ -1,8 +1,15 @@
-import { type FC, useMemo } from 'react';
-import { useInitData, useLaunchParams, type User } from '@telegram-apps/sdk-react';
-import { List, Placeholder } from '@telegram-apps/telegram-ui';
+import {
+  useInitData,
+  useLaunchParams,
+  type User,
+} from '@telegram-apps/sdk-react'
+import { List, Placeholder } from '@telegram-apps/telegram-ui'
+import { type FC, useMemo } from 'react'
 
-import { DisplayData, type DisplayDataRow } from '@/components/DisplayData/DisplayData.tsx';
+import {
+  DisplayData,
+  type DisplayDataRow,
+} from '@/components/DisplayData/DisplayData.tsx'
 
 function getUserRows(user: User): DisplayDataRow[] {
   return [
@@ -16,16 +23,16 @@ function getUserRows(user: User): DisplayDataRow[] {
     { title: 'language_code', value: user.languageCode },
     { title: 'allows_to_write_to_pm', value: user.allowsWriteToPm },
     { title: 'added_to_attachment_menu', value: user.addedToAttachmentMenu },
-  ];
+  ]
 }
 
 export const InitDataPage: FC = () => {
-  const initDataRaw = useLaunchParams().initDataRaw;
-  const initData = useInitData();
+  const initDataRaw = useLaunchParams().initDataRaw
+  const initData = useInitData()
 
   const initDataRows = useMemo<DisplayDataRow[] | undefined>(() => {
     if (!initData || !initDataRaw) {
-      return;
+      return
     }
     const {
       hash,
@@ -36,7 +43,7 @@ export const InitDataPage: FC = () => {
       startParam,
       canSendAfter,
       canSendAfterDate,
-    } = initData;
+    } = initData
     return [
       { title: 'raw', value: initDataRaw },
       { title: 'auth_date', value: authDate.toLocaleString() },
@@ -48,22 +55,24 @@ export const InitDataPage: FC = () => {
       { title: 'start_param', value: startParam },
       { title: 'chat_type', value: chatType },
       { title: 'chat_instance', value: chatInstance },
-    ];
-  }, [initData, initDataRaw]);
+    ]
+  }, [initData, initDataRaw])
 
   const userRows = useMemo<DisplayDataRow[] | undefined>(() => {
-    return initData && initData.user ? getUserRows(initData.user) : undefined;
-  }, [initData]);
+    return initData && initData.user ? getUserRows(initData.user) : undefined
+  }, [initData])
 
   const receiverRows = useMemo<DisplayDataRow[] | undefined>(() => {
-    return initData && initData.receiver ? getUserRows(initData.receiver) : undefined;
-  }, [initData]);
+    return initData && initData.receiver
+      ? getUserRows(initData.receiver)
+      : undefined
+  }, [initData])
 
   const chatRows = useMemo<DisplayDataRow[] | undefined>(() => {
     if (!initData?.chat) {
-      return;
+      return
     }
-    const { id, title, type, username, photoUrl } = initData.chat;
+    const { id, title, type, username, photoUrl } = initData.chat
 
     return [
       { title: 'id', value: id.toString() },
@@ -71,29 +80,29 @@ export const InitDataPage: FC = () => {
       { title: 'type', value: type },
       { title: 'username', value: username },
       { title: 'photo_url', value: photoUrl },
-    ];
-  }, [initData]);
+    ]
+  }, [initData])
 
   if (!initDataRows) {
     return (
       <Placeholder
-        header="Oops"
-        description="Application was launched with missing init data"
+        header='Oops'
+        description='Application was launched with missing init data'
       >
         <img
-          alt="Telegram sticker"
-          src="https://xelene.me/telegram.gif"
+          alt='Telegram sticker'
+          src='https://xelene.me/telegram.gif'
           style={{ display: 'block', width: '144px', height: '144px' }}
         />
       </Placeholder>
-    );
+    )
   }
   return (
     <List>
-      <DisplayData header={'Init Data'} rows={initDataRows}/>
-      {userRows && <DisplayData header={'User'} rows={userRows}/>}
-      {receiverRows && <DisplayData header={'Receiver'} rows={receiverRows}/>}
-      {chatRows && <DisplayData header={'Chat'} rows={chatRows}/>}
+      <DisplayData header={'Init Data'} rows={initDataRows} />
+      {userRows && <DisplayData header={'User'} rows={userRows} />}
+      {receiverRows && <DisplayData header={'Receiver'} rows={receiverRows} />}
+      {chatRows && <DisplayData header={'Chat'} rows={chatRows} />}
     </List>
-  );
-};
+  )
+}
