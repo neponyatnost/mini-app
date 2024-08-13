@@ -1,137 +1,191 @@
-import { getUsersWithTokens } from '@/api/users'
-import { Link } from '@/components/Link/Link.tsx'
+import { getUserByUsername, getUsersWithTokens } from '@/api/users'
+import { DisplayData } from '@/components/DisplayData/DisplayData'
 import { useInitData } from '@telegram-apps/sdk-react'
 import {
   Cell,
-  Headline,
-  Image,
   List,
-  Section,
+  Placeholder,
+  Spinner,
+  Tabbar,
+  Text,
 } from '@telegram-apps/telegram-ui'
+import { TabbarItem } from '@telegram-apps/telegram-ui/dist/components/Layout/Tabbar/components/TabbarItem/TabbarItem'
 import { useEffect, useState, type FC } from 'react'
-import tonImage from './ton.svg'
-
-// function getUserRows(user: User): DisplayDataRow[] {
-//   return [
-//     { title: 'id', value: user.id.toString() },
-//     { title: 'username', value: user.username },
-//     { title: 'photo_url', value: user.photoUrl },
-//     { title: 'last_name', value: user.lastName },
-//     { title: 'first_name', value: user.firstName },
-//     { title: 'is_bot', value: user.isBot },
-//     { title: 'is_premium', value: user.isPremium },
-//     { title: 'language_code', value: user.languageCode },
-//     { title: 'allows_to_write_to_pm', value: user.allowsWriteToPm },
-//     { title: 'added_to_attachment_menu', value: user.addedToAttachmentMenu },
-//   ]
-// }
 
 export const IndexPage: FC = () => {
-  const [users, setUsers] = useState<
+  const [usersList, setUsersList] = useState<
     | {
         tokens: number | null
         username: string | null
+        city: string | null
+        country: string | null
       }[]
     | undefined
-  >([])
-  // const initDataRaw = useLaunchParams().initDataRaw
+  >()
+  const [currentUserData, setCurrentUserData] = useState<
+    | {
+        city: string | null
+        country: string | null
+      }
+    | undefined
+  >()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isActiveTabButton, setIsActiveTabButton] = useState('1')
   const initData = useInitData()
 
-  // const initDataRows = useMemo<DisplayDataRow[] | undefined>(() => {
-  //   if (!initData || !initDataRaw) {
-  //     return
-  //   }
-  //   const {
-  //     hash,
-  //     queryId,
-  //     chatType,
-  //     chatInstance,
-  //     authDate,
-  //     startParam,
-  //     canSendAfter,
-  //     canSendAfterDate,
-  //   } = initData
-  //   return [
-  //     { title: 'raw', value: initDataRaw },
-  //     { title: 'auth_date', value: authDate.toLocaleString() },
-  //     { title: 'auth_date (raw)', value: authDate.getTime() / 1000 },
-  //     { title: 'hash', value: hash },
-  //     { title: 'can_send_after', value: canSendAfterDate?.toISOString() },
-  //     { title: 'can_send_after (raw)', value: canSendAfter },
-  //     { title: 'query_id', value: queryId },
-  //     { title: 'start_param', value: startParam },
-  //     { title: 'chat_type', value: chatType },
-  //     { title: 'chat_instance', value: chatInstance },
-  //   ]
-  // }, [initData, initDataRaw])
-
-  // const userRows = useMemo<DisplayDataRow[] | undefined>(() => {
-  //   return initData && initData.user ? getUserRows(initData.user) : undefined
-  // }, [initData])
-
-  // const receiverRows = useMemo<DisplayDataRow[] | undefined>(() => {
-  //   return initData && initData.receiver
-  //     ? getUserRows(initData.receiver)
-  //     : undefined
-  // }, [initData])
-
-  // const chatRows = useMemo<DisplayDataRow[] | undefined>(() => {
-  //   if (!initData?.chat) {
-  //     return
-  //   }
-  //   const { id, title, type, username, photoUrl } = initData.chat
-
-  //   return [
-  //     { title: 'id', value: id.toString() },
-  //     { title: 'title', value: title },
-  //     { title: 'type', value: type },
-  //     { title: 'username', value: username },
-  //     { title: 'photo_url', value: photoUrl },
-  //   ]
-  // }, [initData])
-
   useEffect(() => {
-    async function getUsers() {
-      const users = await getUsersWithTokens()
+    async function fetchUsers() {
+      try {
+        setIsLoading(true)
+        const users = await getUsersWithTokens()
+        if (!users) {
+          setIsLoading(false)
+          return
+        }
 
-      users?.sort((a, b) => b.tokens! - a.tokens!)
+        users.sort((a, b) => b.tokens! - a.tokens!)
 
-      setUsers(users)
+        setUsersList(users)
+      } catch (error) {
+        console.log(error)
+        throw error
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    getUsers()
+    fetchUsers()
   }, [])
 
-  console.log(initData)
+  useEffect(() => {
+    async function fetchCurrentUserData() {
+      try {
+        setIsLoading(true)
+        const currentUser = await getUserByUsername(
+          initData?.user?.username || ''
+        )
+
+        setCurrentUserData(currentUser)
+      } catch (error) {
+        console.log(error)
+        throw error
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchCurrentUserData()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <Placeholder header='Loading' description='Please, wait...'>
+        <Spinner size='l' />
+      </Placeholder>
+    )
+  }
 
   return (
-    <List>
-      <Section>
-        <Link to='/ton-connect'>
-          <Cell
-            before={<Image src={tonImage} size={48} />}
-            subtitle='Connect your TON wallet!'
+    <>
+      <Cell>Hello, {initData?.user?.firstName || 'Unknown user'}!</Cell>
+      <Tabbar
+        style={{
+          zIndex: '100',
+          backgroundColor: '#17212b',
+          borderTopLeftRadius: '1rem',
+          borderTopRightRadius: '1rem',
+        }}
+      >
+        <TabbarItem>
+          <Text
+            style={{
+              color: isActiveTabButton === '1' ? '#6ab2f2' : '',
+              transition: 'all .2s ease',
+            }}
+            onClick={() => setIsActiveTabButton('1')}
           >
-            TON Connect
-          </Cell>
-        </Link>
-      </Section>
-      <Section>
-        <Cell>
-          <Headline>Top users</Headline>
-        </Cell>
-      </Section>
-      <Section>
-        {users &&
-          users.map((user) => (
-            <Cell
-              key={user.username}
-              before={<Image src={initData?.chat?.photoUrl} />}
-            >
-              {user.username} - {user.tokens}
-            </Cell>
-          ))}
-      </Section>
-    </List>
+            City
+          </Text>
+        </TabbarItem>
+        <TabbarItem>
+          <Text
+            style={{
+              color: isActiveTabButton === '2' ? '#6ab2f2' : '',
+              transition: 'all .2s ease',
+            }}
+            onClick={() => setIsActiveTabButton('2')}
+          >
+            Country
+          </Text>
+        </TabbarItem>
+        <TabbarItem>
+          <Text
+            style={{
+              color: isActiveTabButton === '3' ? '#6ab2f2' : '',
+              transition: 'all .2s ease',
+            }}
+            onClick={() => setIsActiveTabButton('3')}
+          >
+            World
+          </Text>
+        </TabbarItem>
+      </Tabbar>
+      <List
+        style={{
+          paddingBottom: '4rem',
+        }}
+      >
+        <DisplayData
+          header={`Top users in ${
+            isActiveTabButton === '1'
+              ? 'your city'
+              : isActiveTabButton === '2'
+              ? 'your country'
+              : 'the world'
+          }`}
+          footer={`Total user count: ${usersList?.length || 0}`}
+          rows={
+            usersList && isActiveTabButton === '3'
+              ? usersList.map((user, index) => ({
+                  title:
+                    index +
+                      1 +
+                      '. @' +
+                      user.username +
+                      ` (${user.city}, ${user.country})` ||
+                    'Can not get username',
+                  value: "User's rating: " + user.tokens,
+                }))
+              : usersList && isActiveTabButton === '2'
+              ? usersList
+                  .filter((user) => user.country === currentUserData?.country)
+                  .map((user, index) => ({
+                    title:
+                      index +
+                        1 +
+                        '. @' +
+                        user.username +
+                        ` (${user.city}, ${user.country})` ||
+                      'Can not get username',
+                    value: "User's rating: " + user.tokens,
+                  }))
+              : usersList && isActiveTabButton === '1'
+              ? usersList
+                  .filter((user) => user.city === currentUserData?.city)
+                  .map((user, index) => ({
+                    title:
+                      index +
+                        1 +
+                        '. @' +
+                        user.username +
+                        ` (${user.city}, ${user.country})` ||
+                      'Can not get username',
+                    value: "User's rating: " + user.tokens,
+                  }))
+              : [{ title: 'No data', value: 'Try later' }]
+          }
+        ></DisplayData>
+      </List>
+    </>
   )
 }
