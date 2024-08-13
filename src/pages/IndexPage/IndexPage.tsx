@@ -19,6 +19,8 @@ export const IndexPage: FC = () => {
         username: string | null
         city: string | null
         country: string | null
+        firstName: string | null
+        lastName: string | null
       }[]
     | undefined
   >()
@@ -94,6 +96,7 @@ export const IndexPage: FC = () => {
           backgroundColor: '#17212b',
           borderTopLeftRadius: '1rem',
           borderTopRightRadius: '1rem',
+          padding: '2rem',
         }}
       >
         <TabbarItem>
@@ -151,7 +154,7 @@ export const IndexPage: FC = () => {
                     index +
                       1 +
                       '. @' +
-                      user.username +
+                      user.firstName +
                       ` (${user.city}, ${user.country})` ||
                     'Can not get username',
                   value: "User's rating: " + user.tokens,
@@ -164,7 +167,7 @@ export const IndexPage: FC = () => {
                       index +
                         1 +
                         '. @' +
-                        user.username +
+                        user.firstName +
                         ` (${user.city}, ${user.country})` ||
                       'Can not get username',
                     value: "User's rating: " + user.tokens,
@@ -177,7 +180,7 @@ export const IndexPage: FC = () => {
                       index +
                         1 +
                         '. @' +
-                        user.username +
+                        user.firstName +
                         ` (${user.city}, ${user.country})` ||
                       'Can not get username',
                     value: "User's rating: " + user.tokens,

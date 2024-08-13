@@ -4,7 +4,7 @@ export async function getUsersWithTokens() {
   try {
     const { data, error } = await supabase
       .from('users')
-      .select('tokens, username, city, country')
+      .select('tokens, username, city, country, firstName, lastName')
       .gte('tokens', 2)
     if (error) {
       console.log('Error while fetching userrs with tokens > 2')
