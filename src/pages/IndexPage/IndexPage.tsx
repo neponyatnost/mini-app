@@ -94,7 +94,7 @@ export const IndexPage: FC = () => {
       <Tabbar
         style={{
           zIndex: '100',
-          backgroundColor: !isDark ? '#17212b' : '#6ab2f2',
+          backgroundColor: isDark ? '#17212b' : '#6ab2f2',
           // borderTopLeftRadius: '1rem',
           // borderTopRightRadius: '1rem',
           height: '70px',
