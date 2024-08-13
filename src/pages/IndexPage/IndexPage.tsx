@@ -1,6 +1,6 @@
 import { getUserByUsername, getUsersWithTokens } from '@/api/users'
 import { DisplayData } from '@/components/DisplayData/DisplayData'
-import { useInitData } from '@telegram-apps/sdk-react'
+import { useInitData, useThemeParams } from '@telegram-apps/sdk-react'
 import {
   Cell,
   List,
@@ -34,6 +34,7 @@ export const IndexPage: FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isActiveTabButton, setIsActiveTabButton] = useState('1')
   const initData = useInitData()
+  const { isDark } = useThemeParams()
 
   useEffect(() => {
     async function fetchUsers() {
@@ -93,16 +94,19 @@ export const IndexPage: FC = () => {
       <Tabbar
         style={{
           zIndex: '100',
-          backgroundColor: '#17212b',
-          borderTopLeftRadius: '1rem',
-          borderTopRightRadius: '1rem',
-          height: '50px',
+          backgroundColor: !isDark ? '#17212b' : '#6ab2f2',
+          // borderTopLeftRadius: '1rem',
+          // borderTopRightRadius: '1rem',
+          height: '70px',
         }}
       >
         <TabbarItem>
           <Text
             style={{
-              color: isActiveTabButton === '1' ? '#6ab2f2' : '',
+              color: '#f5f5f5',
+              borderBottom: `${
+                isActiveTabButton === '1' ? 'solid #f5f5f5' : ''
+              }`,
               transition: 'all .2s ease',
             }}
             onClick={() => setIsActiveTabButton('1')}
@@ -113,7 +117,10 @@ export const IndexPage: FC = () => {
         <TabbarItem>
           <Text
             style={{
-              color: isActiveTabButton === '2' ? '#6ab2f2' : '',
+              color: '#f5f5f5',
+              borderBottom: `${
+                isActiveTabButton === '2' ? 'solid #f5f5f5' : ''
+              }`,
               transition: 'all .2s ease',
             }}
             onClick={() => setIsActiveTabButton('2')}
@@ -124,7 +131,10 @@ export const IndexPage: FC = () => {
         <TabbarItem>
           <Text
             style={{
-              color: isActiveTabButton === '3' ? '#6ab2f2' : '',
+              color: '#f5f5f5',
+              borderBottom: `${
+                isActiveTabButton === '3' ? 'solid #f5f5f5' : ''
+              }`,
               transition: 'all .2s ease',
             }}
             onClick={() => setIsActiveTabButton('3')}
@@ -135,7 +145,7 @@ export const IndexPage: FC = () => {
       </Tabbar>
       <List
         style={{
-          paddingBottom: '4rem',
+          paddingBottom: '70px',
         }}
       >
         <DisplayData
@@ -153,7 +163,7 @@ export const IndexPage: FC = () => {
                   title:
                     index +
                       1 +
-                      '. @' +
+                      '. ' +
                       user.firstName +
                       ` (${user.city}, ${user.country})` ||
                     'Can not get username',
@@ -166,7 +176,7 @@ export const IndexPage: FC = () => {
                     title:
                       index +
                         1 +
-                        '. @' +
+                        '. ' +
                         user.firstName +
                         ` (${user.city}, ${user.country})` ||
                       'Can not get username',
@@ -179,7 +189,7 @@ export const IndexPage: FC = () => {
                     title:
                       index +
                         1 +
-                        '. @' +
+                        '. ' +
                         user.firstName +
                         ` (${user.city}, ${user.country})` ||
                       'Can not get username',
