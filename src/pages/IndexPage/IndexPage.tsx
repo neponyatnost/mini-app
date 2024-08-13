@@ -96,7 +96,7 @@ export const IndexPage: FC = () => {
           backgroundColor: '#17212b',
           borderTopLeftRadius: '1rem',
           borderTopRightRadius: '1rem',
-          padding: '2rem',
+          height: '50px',
         }}
       >
         <TabbarItem>
