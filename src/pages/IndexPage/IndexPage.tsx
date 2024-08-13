@@ -146,6 +146,7 @@ export const IndexPage: FC = () => {
       <List
         style={{
           paddingBottom: '70px',
+          color: '#86cef0',
         }}
       >
         <DisplayData
