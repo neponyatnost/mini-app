@@ -88,6 +88,10 @@ export const IndexPage: FC = () => {
     )
   }
 
+  if (usersList?.length === 0) {
+    return
+  }
+
   return (
     <>
       <Cell>Hello, {initData?.user?.firstName || 'Unknown user'}!</Cell>
@@ -171,34 +175,59 @@ export const IndexPage: FC = () => {
                   value: "User's rating: " + user.tokens,
                 }))
               : usersList && isActiveTabButton === '2'
-              ? usersList
-                  .filter((user) => user.country === currentUserData?.country)
-                  .map((user, index) => ({
-                    title:
-                      index +
-                        1 +
-                        '. ' +
-                        user.firstName +
-                        ` (${user.city}, ${user.country})` ||
-                      'Can not get username',
-                    value: "User's rating: " + user.tokens,
-                  }))
+              ? (() => {
+                  const filteredUsers = usersList.filter(
+                    (user) => user.country === currentUserData?.country
+                  )
+                  return filteredUsers.length
+                    ? filteredUsers.map((user, index) => ({
+                        title:
+                          index +
+                            1 +
+                            '. ' +
+                            user.firstName +
+                            ` (${user.city}, ${user.country})` ||
+                          'Can not get username',
+                        value: "User's rating: " + user.tokens,
+                      }))
+                    : [
+                        {
+                          title: 'No users found in your country.',
+                          value: 'Please try again later.',
+                        },
+                      ]
+                })()
               : usersList && isActiveTabButton === '1'
-              ? usersList
-                  .filter((user) => user.city === currentUserData?.city)
-                  .map((user, index) => ({
-                    title:
-                      index +
-                        1 +
-                        '. ' +
-                        user.firstName +
-                        ` (${user.city}, ${user.country})` ||
-                      'Can not get username',
-                    value: "User's rating: " + user.tokens,
-                  }))
-              : [{ title: 'No data', value: 'Try later' }]
+              ? (() => {
+                  const filteredUsers = usersList.filter(
+                    (user) => user.city === currentUserData?.city
+                  )
+                  return filteredUsers.length
+                    ? filteredUsers.map((user, index) => ({
+                        title:
+                          index +
+                            1 +
+                            '. ' +
+                            user.firstName +
+                            ` (${user.city}, ${user.country})` ||
+                          'Can not get username',
+                        value: "User's rating: " + user.tokens,
+                      }))
+                    : [
+                        {
+                          title: 'No users found in your city.',
+                          value: 'Please try again later.',
+                        },
+                      ]
+                })()
+              : [
+                  {
+                    title: 'Something went wrong, try to reload this page.',
+                    value: 'Something went wrong',
+                  },
+                ]
           }
-        ></DisplayData>
+        />
       </List>
     </>
   )
