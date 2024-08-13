@@ -170,8 +170,14 @@ export const IndexPage: FC = () => {
                       1 +
                       '. ' +
                       user.firstName +
-                      ` (${user.city}, ${user.country})` ||
-                    'Can not get username',
+                      ` (${user.city}, ${user.country})` +
+                      (index === 0
+                        ? '🥇 '
+                        : index === 1
+                        ? '🥈 '
+                        : index === 2
+                        ? '🥉 '
+                        : '') || 'Can not get username',
                   value: "User's rating: " + user.tokens,
                 }))
               : usersList && isActiveTabButton === '2'
@@ -186,8 +192,14 @@ export const IndexPage: FC = () => {
                             1 +
                             '. ' +
                             user.firstName +
-                            ` (${user.city}, ${user.country})` ||
-                          'Can not get username',
+                            ` (${user.city}, ${user.country})` +
+                            (index === 0
+                              ? '🥇 '
+                              : index === 1
+                              ? '🥈 '
+                              : index === 2
+                              ? '🥉 '
+                              : '') || 'Can not get username',
                         value: "User's rating: " + user.tokens,
                       }))
                     : [
@@ -209,8 +221,14 @@ export const IndexPage: FC = () => {
                             1 +
                             '. ' +
                             user.firstName +
-                            ` (${user.city}, ${user.country})` ||
-                          'Can not get username',
+                            ` (${user.city}, ${user.country})` +
+                            (index === 0
+                              ? '🥇 '
+                              : index === 1
+                              ? '🥈 '
+                              : index === 2
+                              ? '🥉 '
+                              : '') || 'Can not get username',
                         value: "User's rating: " + user.tokens,
                       }))
                     : [
